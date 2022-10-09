@@ -1,4 +1,4 @@
-maple-diffusion/bins
-maple-diffusion/bins
+maple-diffusion/bins/*.txt
+maple-diffusion/bins/*.bin
 xcuserdata/
 .DS_Store
