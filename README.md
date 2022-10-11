@@ -4,7 +4,7 @@ Maple Diffusion runs Stable Diffusion models **locally** on macOS / iOS devices,
 
 ![](demonstration.jpg)
 
-Maple Diffusion should be capable of generating a reasonable image in a minute or two on a recent iPhone (I get around ~2.3s / step on an iPhone 13 Pro).
+Maple Diffusion should be capable of generating a reasonable image [in a minute or two](https://twitter.com/madebyollin/status/1579213789823893504) on a recent iPhone (I get around ~2.3s / step on an iPhone 13 Pro).
 
 To attain usable performance without tripping over iOS's 4GB memory limit, Maple Diffusion relies internally on FP16 (NHWC) tensors, operator fusion from MPSGraph, and a truly pitiable degree of swapping models to device storage.
 
