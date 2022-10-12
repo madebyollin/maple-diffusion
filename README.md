@@ -12,6 +12,10 @@ On macOS, Maple Diffusion uses slightly more memory (~6GB), to reach <1s / step.
 
 ![](screenshot.jpg)
 
+# Projects using Maple Diffusion
+
+* https://github.com/mortenjust/maple-diffusion/ is a fork with several improvements
+
 # Usage
 
 To build and run Maple Diffusion:
