@@ -18,7 +18,7 @@ On macOS, Maple Diffusion uses slightly more memory (~6GB), to reach <1s / step.
 
 # Usage
 
-Maple Diffusion should run on any recent Mac, or any iOS device with [sufficient RAM](https://blakespot.com/ios_device_specifications_grid.html) (≥6144MB RAM definitely works; 4096GB *might* but I wouldn't bet on it; anything lower than that won't work).
+Maple Diffusion should run on any recent Mac, or any iOS device with [sufficient RAM](https://blakespot.com/ios_device_specifications_grid.html) (≥6144MB RAM definitely works; 4096MB *might* but I wouldn't bet on it; anything lower than that won't work).
 
 To build and run Maple Diffusion:
 
