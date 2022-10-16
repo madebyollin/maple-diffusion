@@ -15,6 +15,18 @@ struct ContentView: View {
     @State var running: Bool = false
     @State var progressProp: Float = 1
     @State var progressStage: String = "Ready"
+    
+    func loadModels() {
+        dispatchQueue.async {
+            running = true
+            mapleDiffusion.initModels() { (p, s) -> () in
+                progressProp = p
+                progressStage = s
+            }
+            running = false
+        }
+    }
+    
     func generate() {
         dispatchQueue.async {
             running = true
@@ -36,9 +48,15 @@ struct ContentView: View {
             Text("🍁 Maple Diffusion").foregroundColor(.orange).bold().frame(alignment: Alignment.center)
 #endif
             if (image == nil) {
-                Rectangle().fill(.gray).aspectRatio(1.0, contentMode: .fit).frame(idealWidth: mapleDiffusion.width as! CGFloat, idealHeight: mapleDiffusion.height as! CGFloat)
+                Rectangle().fill(.gray).aspectRatio(1.0, contentMode: .fit).frame(idealWidth: mapleDiffusion.width as? CGFloat, idealHeight: mapleDiffusion.height as? CGFloat)
             } else {
-                image!.resizable().aspectRatio(contentMode: .fit).frame(idealWidth: mapleDiffusion.width as! CGFloat, idealHeight: mapleDiffusion.height as! CGFloat)
+#if os(iOS)
+                ShareLink(item: image!, preview: SharePreview(prompt, image: image!)) {
+                    image!.resizable().aspectRatio(contentMode: .fit).frame(idealWidth: mapleDiffusion.width as? CGFloat, idealHeight: mapleDiffusion.height as? CGFloat)
+                }
+#else
+                image!.resizable().aspectRatio(contentMode: .fit).frame(idealWidth: mapleDiffusion.width as? CGFloat, idealHeight: mapleDiffusion.height as? CGFloat)
+#endif
             }
             HStack {
                 Text("Prompt").bold()
@@ -72,7 +90,7 @@ struct ContentView: View {
                     .font(Font.title)
                     .cornerRadius(32)
             }.buttonStyle(.borderless).disabled(running)
-        }.padding(16)
+        }.padding(16).onAppear(perform: loadModels)
     }
 }
 

@@ -682,14 +682,21 @@ class MapleDiffusion {
         diffGuidanceScaleIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.float16, name: nil)
         diffOut = makeDiffusionStep(graph: diffGraph, xIn: diffXIn, etaUncondIn: diffEtaUncondIn, etaCondIn: diffEtaCondIn, tIn: diffTIn, tPrevIn: diffTPrevIn, guidanceScaleIn: diffGuidanceScaleIn)
         diffAuxOut = makeAuxUpsampler(graph: diffGraph, xIn: diffOut)
-        
+    }
+    
+    public func initModels(completion: (Float, String)->()) {
         // text guidance
+        completion(0, "Loading text guidance...")
         initTextGuidance()
         
         // unet
+        completion(0.25, "Loading UNet part 1/3...")
         initAnUnexpectedJourney()
+        completion(0.5, "Loading UNet part 2/3...")
         initTheDesolationOfSmaug()
+        completion(0.75, "Loading UNet part 3/3...")
         initTheBattleOfTheFiveArmies()
+        completion(1, "Loaded models")
     }
     
     private func initTextGuidance() {
