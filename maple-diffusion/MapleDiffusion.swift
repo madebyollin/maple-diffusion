@@ -99,7 +99,8 @@ func makeByteConverter(graph: MPSGraph, xIn: MPSGraphTensor) -> MPSGraphTensor {
     x = graph.multiplication(x, graph.constant(255, shape: [1], dataType: MPSDataType.float16), name: nil)
     x = graph.round(with: x, name: nil)
     x = graph.cast(x, to: MPSDataType.uInt8, name: "cast to uint8 rgba")
-    let alpha = graph.constant(255, shape: [1,  x.shape![1], x.shape![2], 1], dataType: MPSDataType.uInt8)
+    var alpha = graph.constant(255, shape: [1, 1, 1, 1], dataType: MPSDataType.uInt8)
+    alpha = graph.broadcast(alpha, shape: [x.shape![0], x.shape![1], x.shape![2], 1], name: nil)
     return graph.concatTensors([x, alpha], dimension: 3, name: nil)
 }
 
@@ -655,9 +656,6 @@ class MapleDiffusion {
     var unetTheBattleOfTheFiveArmiesExecutable: MPSGraphExecutable?
     var theBattleOfTheFiveArmiesIndices = [MPSGraphTensor: Int]()
     
-    var width: NSNumber = 64
-    var height: NSNumber = 64
-    
     public init(saveMemoryButBeSlower: Bool = true) {
         saveMemory = saveMemoryButBeSlower
         device = MTLCreateSystemDefaultDevice()!
@@ -674,9 +672,9 @@ class MapleDiffusion {
         
         // diffusion
         diffGraph = makeGraph()
-        diffXIn = diffGraph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
-        diffEtaUncondIn = diffGraph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
-        diffEtaCondIn = diffGraph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
+        diffXIn = diffGraph.placeholder(shape: [1, -1, -1, 4], dataType: MPSDataType.float16, name: nil)
+        diffEtaUncondIn = diffGraph.placeholder(shape: [1, -1, -1, 4], dataType: MPSDataType.float16, name: nil)
+        diffEtaCondIn = diffGraph.placeholder(shape: [1, -1, -1, 4], dataType: MPSDataType.float16, name: nil)
         diffTIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.int32, name: nil)
         diffTPrevIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.int32, name: nil)
         diffGuidanceScaleIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.float16, name: nil)
@@ -710,12 +708,14 @@ class MapleDiffusion {
     
     private func initAnUnexpectedJourney() {
         let graph = makeGraph()
-        let xIn = graph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
+        let xIn = graph.placeholder(shape: [1, -1, -1, 4], dataType: MPSDataType.float16, name: nil)
         let condIn = graph.placeholder(shape: [saveMemory ? 1 : 2, 77, 768], dataType: MPSDataType.float16, name: nil)
         let tembIn = graph.placeholder(shape: [1, 320], dataType: MPSDataType.float16, name: nil)
         let unetOuts = makeUNetAnUnexpectedJourney(graph: graph, xIn: xIn, tembIn: tembIn, condIn: condIn, name: "model.diffusion_model", saveMemory: saveMemory)
         let unetFeeds = [xIn, condIn, tembIn].reduce(into: [:], {$0[$1] = MPSGraphShapedType(shape: $1.shape!, dataType: $1.dataType)})
-        unetAnUnexpectedJourneyExecutable = graph.compile(with: graphDevice, feeds: unetFeeds, targetTensors: unetOuts, targetOperations: nil, compilationDescriptor: nil)
+        let compDesc = MPSGraphCompilationDescriptor()
+        compDesc.disableTypeInference()
+        unetAnUnexpectedJourneyExecutable = graph.compile(with: graphDevice, feeds: unetFeeds, targetTensors: unetOuts, targetOperations: nil, compilationDescriptor: compDesc)
         anUnexpectedJourneyShapes = unetOuts.map{$0.shape!}
     }
     
@@ -729,7 +729,9 @@ class MapleDiffusion {
         }
         let feeds = placeholders.reduce(into: [:], {$0[$1] = MPSGraphShapedType(shape: $1.shape!, dataType: $1.dataType)})
         let unetOuts = makeUNetTheDesolationOfSmaug(graph: graph, savedInputsIn: placeholders, name: "model.diffusion_model", saveMemory: saveMemory)
-        unetTheDesolationOfSmaugExecutable = graph.compile(with: graphDevice, feeds: feeds, targetTensors: unetOuts, targetOperations: nil, compilationDescriptor: nil)
+        let compDesc = MPSGraphCompilationDescriptor()
+        compDesc.disableTypeInference()
+        unetTheDesolationOfSmaugExecutable = graph.compile(with: graphDevice, feeds: feeds, targetTensors: unetOuts, targetOperations: nil, compilationDescriptor: compDesc)
         theDesolationOfSmaugShapes = unetOuts.map{$0.shape!}
     }
     
@@ -743,12 +745,14 @@ class MapleDiffusion {
         }
         let feeds = unetPlaceholders.reduce(into: [:], {$0[$1] = MPSGraphShapedType(shape: $1.shape!, dataType: $1.dataType)})
         let unetOut = makeUNetTheBattleOfTheFiveArmies(graph: graph, savedInputsIn: unetPlaceholders, name: "model.diffusion_model", saveMemory: saveMemory)
-        unetTheBattleOfTheFiveArmiesExecutable = graph.compile(with: graphDevice, feeds: feeds, targetTensors: [unetOut], targetOperations: nil, compilationDescriptor: nil)
+        let compDesc = MPSGraphCompilationDescriptor()
+        compDesc.disableTypeInference()
+        unetTheBattleOfTheFiveArmiesExecutable = graph.compile(with: graphDevice, feeds: feeds, targetTensors: [unetOut], targetOperations: nil, compilationDescriptor: compDesc)
     }
     
-    private func randomLatent(seed: Int) -> MPSGraphTensorData {
+    private func randomLatent(seed: Int, latentHeight: Int, latentWidth: Int) -> MPSGraphTensorData {
         let graph = makeGraph()
-        let out = graph.randomTensor(withShape: [1, height, width, 4], descriptor: MPSGraphRandomOpDescriptor(distribution: .normal, dataType: .float16)!, seed: seed, name: nil)
+        let out = graph.randomTensor(withShape: [1, latentHeight as NSNumber, latentWidth as NSNumber, 4], descriptor: MPSGraphRandomOpDescriptor(distribution: .normal, dataType: .float16)!, seed: seed, name: nil)
         return graph.run(feeds: [:], targetTensors: [out], targetOperations: nil)[out]!
     }
     
@@ -820,7 +824,7 @@ class MapleDiffusion {
         return (etaRes[eta0]!, etaRes[eta1]!)
     }
     
-    private func generateLatent(prompt: String, negativePrompt: String, seed: Int, steps: Int, guidanceScale: Float, completion: @escaping (CGImage?, Float, String)->()) -> MPSGraphTensorData {
+    private func generateLatent(prompt: String, negativePrompt: String, seed: Int, steps: Int, guidanceScale: Float, latentHeight: Int, latentWidth: Int, completion: @escaping (CGImage?, Float, String)->()) -> MPSGraphTensorData {
         completion(nil, 0, "Tokenizing...")
         
         // 1. String -> Tokens
@@ -837,7 +841,7 @@ class MapleDiffusion {
         completion(nil, 0.5 * 1 / Float(steps), "Generating noise...")
         
         // 3. Noise generation
-        var latent = randomLatent(seed: seed)
+        var latent = randomLatent(seed: seed, latentHeight: latentHeight, latentWidth: latentWidth)
         let timesteps = Array<Int>(stride(from: 1, to: 1000, by: Int(1000 / steps)))
         completion(nil, 0.75 * 1 / Float(steps), "Starting diffusion...")
         
@@ -875,8 +879,8 @@ class MapleDiffusion {
         return latent
     }
     
-    public func generate(prompt: String, negativePrompt: String, seed: Int, steps: Int, guidanceScale: Float, completion: @escaping (CGImage?, Float, String)->()) {
-        let latent = generateLatent(prompt: prompt, negativePrompt: negativePrompt, seed: seed, steps: steps, guidanceScale: guidanceScale, completion: completion)
+    public func generate(prompt: String, negativePrompt: String, seed: Int, steps: Int, guidanceScale: Float, latentHeight: Int, latentWidth: Int, completion: @escaping (CGImage?, Float, String)->()) {
+        let latent = generateLatent(prompt: prompt, negativePrompt: negativePrompt, seed: seed, steps: steps, guidanceScale: guidanceScale, latentHeight: latentHeight, latentWidth: latentWidth, completion: completion)
         
         if (saveMemory) {
             // MEM-HACK: unload the unet to fit the decoder
