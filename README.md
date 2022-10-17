@@ -22,7 +22,11 @@ Maple Diffusion should run on any Apple Silicon Mac (M1, M2, etc.). Intel macs s
 
 Maple Diffusion should run on any iOS device with [sufficient RAM](https://blakespot.com/ios_device_specifications_grid.html) (≥6144MB RAM definitely works; 4096MB *might* but I wouldn't bet on it; anything lower than that won't work). Recent iPads should work out of the box; recent iPhones should work if you can get the `Increase Memory Limit` capability working (to unlock 4GB of RAM).
 
-iOS 16.1 (beta) is reportedly broken and always generating a gray image :(
+Maple Diffusion currently expects **Xcode 14** and **iOS 16**; other versions may require changing build settings or just not work.
+
+Maple Diffusion reportedly doesn't work on some *recent* iOS devices:
+* iPhone 14 variants reportedly do not honor the increased memory limit, and crash on launch
+* iOS 16.1 (beta) is reportedly broken and always generating a gray image
 
 # Usage
 
