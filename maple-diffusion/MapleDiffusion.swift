@@ -683,7 +683,7 @@ class MapleDiffusion {
         diffTIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.int32, name: nil)
         diffTPrevIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.int32, name: nil)
         diffGuidanceScaleIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.float32, name: nil)
-        diffOut = makeDiffusionStep(graph: diffGraph, xIn: diffXIn, etaUncondIn: diffEtaUncondIn, etaCondIn: diffEtaCondIn, tIn: diffTIn, tPrevIn: diffTPrevIn, guidanceScaleIn: diffGraph.cast(diffGuidanceScaleIn, to: MPSDataType.float16, name: ""))
+        diffOut = makeDiffusionStep(graph: diffGraph, xIn: diffXIn, etaUncondIn: diffEtaUncondIn, etaCondIn: diffEtaCondIn, tIn: diffTIn, tPrevIn: diffTPrevIn, guidanceScaleIn: diffGraph.cast(diffGuidanceScaleIn, to: MPSDataType.float16, name: "this string must not be the empty string"))
         diffAuxOut = makeAuxUpsampler(graph: diffGraph, xIn: diffOut)
     }
     
