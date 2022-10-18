@@ -542,7 +542,10 @@ class BPETokenizer {
         for match in pat.matches(in: String(ns), range: NSRange(location: 0, length: ns.length)) {
             bpe.append(contentsOf: encodeToken(s: ns.substring(with: match.range)))
         }
-        return [49406] + bpe[..<min(75, bpe.count)] + [Int](repeating: 49407, count: 76 - bpe.count)
+        if (bpe.count > 75) {
+            print("Prompt of \(bpe.count) bpe tokens will be truncated: \(s)")
+        }
+        return [49406] + bpe[..<min(75, bpe.count)] + [Int](repeating: 49407, count: max(1, 76 - bpe.count))
     }
 }
 
