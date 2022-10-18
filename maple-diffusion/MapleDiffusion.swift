@@ -1,6 +1,5 @@
 import MetalPerformanceShadersGraph
 import Foundation
-import Accelerate
 
 // Maple Diffusion implements stable diffusion (original v1.4 model)
 // inference via MPSGraph. iOS has a hard memory limit of 4GB (with
