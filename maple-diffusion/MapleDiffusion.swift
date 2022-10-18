@@ -543,7 +543,10 @@ class BPETokenizer {
         for match in pat.matches(in: String(ns), range: NSRange(location: 0, length: ns.length)) {
             bpe.append(contentsOf: encodeToken(s: ns.substring(with: match.range)))
         }
-        return [49406] + bpe[..<min(75, bpe.count)] + [Int](repeating: 49407, count: 76 - bpe.count)
+        if (bpe.count > 75) {
+            print("Prompt of \(bpe.count) bpe tokens will be truncated: \(s)")
+        }
+        return [49406] + bpe[..<min(75, bpe.count)] + [Int](repeating: 49407, count: max(1, 76 - bpe.count))
     }
 }
 
@@ -682,8 +685,8 @@ class MapleDiffusion {
         diffEtaCondIn = diffGraph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
         diffTIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.int32, name: nil)
         diffTPrevIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.int32, name: nil)
-        diffGuidanceScaleIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.float16, name: nil)
-        diffOut = makeDiffusionStep(graph: diffGraph, xIn: diffXIn, etaUncondIn: diffEtaUncondIn, etaCondIn: diffEtaCondIn, tIn: diffTIn, tPrevIn: diffTPrevIn, guidanceScaleIn: diffGuidanceScaleIn)
+        diffGuidanceScaleIn = diffGraph.placeholder(shape: [1], dataType: MPSDataType.float32, name: nil)
+        diffOut = makeDiffusionStep(graph: diffGraph, xIn: diffXIn, etaUncondIn: diffEtaUncondIn, etaCondIn: diffEtaCondIn, tIn: diffTIn, tPrevIn: diffTPrevIn, guidanceScaleIn: diffGraph.cast(diffGuidanceScaleIn, to: MPSDataType.float16, name: "this string must not be the empty string"))
         diffAuxOut = makeAuxUpsampler(graph: diffGraph, xIn: diffOut)
     }
     
@@ -854,8 +857,8 @@ class MapleDiffusion {
             let tMPSData = MPSGraphTensorData(device: graphDevice, data: tData, shape: [1], dataType: MPSDataType.int32)
             let tPrevData = [Int32(tsPrev)].withUnsafeBufferPointer {Data(buffer: $0)}
             let tPrevMPSData = MPSGraphTensorData(device: graphDevice, data: tPrevData, shape: [1], dataType: MPSDataType.int32)
-            let guidanceScaleData = [UInt16(fp32: guidanceScale)].withUnsafeBufferPointer {Data(buffer: $0)}
-            let guidanceScaleMPSData = MPSGraphTensorData(device: graphDevice, data: guidanceScaleData, shape: [1], dataType: MPSDataType.float16)
+            let guidanceScaleData = [Float32(guidanceScale)].withUnsafeBufferPointer {Data(buffer: $0)}
+            let guidanceScaleMPSData = MPSGraphTensorData(device: graphDevice, data: guidanceScaleData, shape: [1], dataType: MPSDataType.float32)
             let temb = tembGraph.run(with: commandQueue, feeds: [tembTIn: tMPSData], targetTensors: [tembOut], targetOperations: nil)[tembOut]!
             let etaUncond: MPSGraphTensorData
             let etaCond: MPSGraphTensorData
@@ -909,19 +912,3 @@ func tensorToCGImage(data: MPSGraphTensorData) -> CGImage {
     return CGImage(width: shape[2], height: shape[1], bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: shape[2]*shape[3], space: CGColorSpaceCreateDeviceRGB(), bitmapInfo:  CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.noneSkipLast.rawValue), provider: CGDataProvider(data: NSData(bytes: &imageArrayCPUBytes, length: imageArrayCPUBytes.count))!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)!
 }
 
-
-extension UInt16 {
-    init(fp32: Float32) {
-        var source = [Float32](repeating: fp32, count: 1)
-        var output = [UInt16](repeating: 0, count: 1)
-        source.withUnsafeMutableBytes { inputPtr in
-            output.withUnsafeMutableBytes { outputPtr in
-                var src = vImage_Buffer(data: inputPtr.baseAddress, height: 1, width: 1, rowBytes: 4)
-                var dst = vImage_Buffer(data: outputPtr.baseAddress, height: 1, width: 1, rowBytes: 2)
-                vImageConvert_PlanarFtoPlanar16F(&src, &dst, .zero)
-            }
-        }
-        
-        self = output[0]
-    }
-}
