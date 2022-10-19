@@ -7,9 +7,9 @@ import Foundation
 // for memory usage in many places (tagged with MEM-HACK) in order to
 // stay under the limit and minimize probability of oom.
 
-func makeGraph() -> MPSGraph {
+func makeGraph(synchonize: Bool) -> MPSGraph {
     let graph = MPSGraph()
-    graph.options = MPSGraphOptions.none
+    graph.options = synchonize ? MPSGraphOptions.synchronizeResults : .none
     return graph
 }
 
@@ -625,6 +625,7 @@ class MapleDiffusion {
     let graphDevice: MPSGraphDevice
     let commandQueue: MTLCommandQueue
     let saveMemory: Bool
+    let shouldSynchronize: Bool
     
     // text tokenization
     let tokenizer: BPETokenizer
@@ -666,17 +667,18 @@ class MapleDiffusion {
         device = MTLCreateSystemDefaultDevice()!
         graphDevice = MPSGraphDevice(mtlDevice: device)
         commandQueue = device.makeCommandQueue()!
+        shouldSynchronize = !device.hasUnifiedMemory
         
         // text tokenization
         tokenizer = BPETokenizer()
         
         // time embedding
-        tembGraph = makeGraph()
+        tembGraph = makeGraph(synchonize: shouldSynchronize)
         tembTIn = tembGraph.placeholder(shape: [1], dataType: MPSDataType.int32, name: nil)
         tembOut = makeTimeFeatures(graph: tembGraph, tIn: tembTIn)
         
         // diffusion
-        diffGraph = makeGraph()
+        diffGraph = makeGraph(synchonize: shouldSynchronize)
         diffXIn = diffGraph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
         diffEtaUncondIn = diffGraph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
         diffEtaCondIn = diffGraph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
@@ -703,7 +705,7 @@ class MapleDiffusion {
     }
     
     private func initTextGuidance() {
-        let graph = makeGraph()
+        let graph = makeGraph(synchonize: shouldSynchronize)
         let textGuidanceIn = graph.placeholder(shape: [2, 77], dataType: MPSDataType.int32, name: nil)
         let textGuidanceOut = makeTextGuidance(graph: graph, xIn: textGuidanceIn, name: "cond_stage_model.transformer.text_model")
         let textGuidanceOut0 = graph.sliceTensor(textGuidanceOut, dimension: 0, start: 0, length: 1, name: nil)
@@ -712,7 +714,7 @@ class MapleDiffusion {
     }
     
     private func initAnUnexpectedJourney() {
-        let graph = makeGraph()
+        let graph = makeGraph(synchonize: shouldSynchronize)
         let xIn = graph.placeholder(shape: [1, height, width, 4], dataType: MPSDataType.float16, name: nil)
         let condIn = graph.placeholder(shape: [saveMemory ? 1 : 2, 77, 768], dataType: MPSDataType.float16, name: nil)
         let tembIn = graph.placeholder(shape: [1, 320], dataType: MPSDataType.float16, name: nil)
@@ -723,7 +725,7 @@ class MapleDiffusion {
     }
     
     private func initTheDesolationOfSmaug() {
-        let graph = makeGraph()
+        let graph = makeGraph(synchonize: shouldSynchronize)
         let condIn = graph.placeholder(shape: [saveMemory ? 1 : 2, 77, 768], dataType: MPSDataType.float16, name: nil)
         let placeholders = anUnexpectedJourneyShapes.map{graph.placeholder(shape: $0, dataType: MPSDataType.float16, name: nil)} + [condIn]
         theDesolationOfSmaugIndices.removeAll()
@@ -737,7 +739,7 @@ class MapleDiffusion {
     }
     
     private func initTheBattleOfTheFiveArmies() {
-        let graph = makeGraph()
+        let graph = makeGraph(synchonize: shouldSynchronize)
         let condIn = graph.placeholder(shape: [saveMemory ? 1 : 2, 77, 768], dataType: MPSDataType.float16, name: nil)
         let unetPlaceholders = theDesolationOfSmaugShapes.map{graph.placeholder(shape: $0, dataType: MPSDataType.float16, name: nil)} + [condIn]
         theBattleOfTheFiveArmiesIndices.removeAll()
@@ -750,9 +752,9 @@ class MapleDiffusion {
     }
     
     private func randomLatent(seed: Int) -> MPSGraphTensorData {
-        let graph = makeGraph()
+        let graph = makeGraph(synchonize: shouldSynchronize)
         let out = graph.randomTensor(withShape: [1, height, width, 4], descriptor: MPSGraphRandomOpDescriptor(distribution: .normal, dataType: .float16)!, seed: seed, name: nil)
-        return graph.run(feeds: [:], targetTensors: [out], targetOperations: nil)[out]!
+        return graph.run(with: commandQueue, feeds: [:], targetTensors: [out], targetOperations: nil)[out]!
     }
     
     private func runTextGuidance(baseTokens: [Int], tokens: [Int]) -> (MPSGraphTensorData, MPSGraphTensorData) {
@@ -765,7 +767,7 @@ class MapleDiffusion {
     private func loadDecoderAndGetFinalImage(xIn: MPSGraphTensorData) -> MPSGraphTensorData {
         // MEM-HACK: decoder is loaded from disc and deallocated to save memory (at cost of latency)
         let x = xIn
-        let decoderGraph = makeGraph()
+        let decoderGraph = makeGraph(synchonize: shouldSynchronize)
         let decoderIn = decoderGraph.placeholder(shape: x.shape, dataType: MPSDataType.float16, name: nil)
         let decoderOut = makeDecoder(graph: decoderGraph, xIn: decoderIn)
         return decoderGraph.run(with: commandQueue, feeds: [decoderIn: x], targetTensors: [decoderOut], targetOperations: nil)[decoderOut]!
@@ -807,19 +809,19 @@ class MapleDiffusion {
     
     private func runBatchedUNet(latent: MPSGraphTensorData, baseGuidance: MPSGraphTensorData, textGuidance: MPSGraphTensorData, temb: MPSGraphTensorData) -> (MPSGraphTensorData, MPSGraphTensorData) {
         // concat
-        var graph = makeGraph()
+        var graph = makeGraph(synchonize: shouldSynchronize)
         let bg = graph.placeholder(shape: baseGuidance.shape, dataType: MPSDataType.float16, name: nil)
         let tg = graph.placeholder(shape: textGuidance.shape, dataType: MPSDataType.float16, name: nil)
         let concatGuidance = graph.concatTensors([bg, tg], dimension: 0, name: nil)
-        let concatGuidanceData = graph.run(feeds: [bg : baseGuidance, tg: textGuidance], targetTensors: [concatGuidance], targetOperations: nil)[concatGuidance]!
+        let concatGuidanceData = graph.run(with: commandQueue, feeds: [bg : baseGuidance, tg: textGuidance], targetTensors: [concatGuidance], targetOperations: nil)[concatGuidance]!
         // run
         let concatEtaData = runUNet(latent: latent, guidance: concatGuidanceData, temb: temb)
         // split
-        graph = makeGraph()
+        graph = makeGraph(synchonize: shouldSynchronize)
         let etas = graph.placeholder(shape: concatEtaData.shape, dataType: concatEtaData.dataType, name: nil)
         let eta0 = graph.sliceTensor(etas, dimension: 0, start: 0, length: 1, name: nil)
         let eta1 = graph.sliceTensor(etas, dimension: 0, start: 1, length: 1, name: nil)
-        let etaRes = graph.run(feeds: [etas: concatEtaData], targetTensors: [eta0, eta1], targetOperations: nil)
+        let etaRes = graph.run(with: commandQueue, feeds: [etas: concatEtaData], targetTensors: [eta0, eta1], targetOperations: nil)
         return (etaRes[eta0]!, etaRes[eta1]!)
     }
     
@@ -908,3 +910,4 @@ func tensorToCGImage(data: MPSGraphTensorData) -> CGImage {
     data.mpsndarray().readBytes(&imageArrayCPUBytes, strideBytes: nil)
     return CGImage(width: shape[2], height: shape[1], bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: shape[2]*shape[3], space: CGColorSpaceCreateDeviceRGB(), bitmapInfo:  CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.noneSkipLast.rawValue), provider: CGDataProvider(data: NSData(bytes: &imageArrayCPUBytes, length: imageArrayCPUBytes.count))!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)!
 }
+
