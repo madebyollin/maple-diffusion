@@ -24,9 +24,10 @@ if not vocab_dest.exists():
         print("downloaded clip vocab")
 
 # model weights
-for k in ckpt["state_dict"]:
+for k, v in ckpt["state_dict"].items():
     if "first_stage_model.encoder" in k: continue
-    ckpt["state_dict"][k].numpy().astype('float16').tofile(outpath / (k + ".bin"))
+    if not hasattr(v, "numpy"): continue
+    v.numpy().astype('float16').tofile(outpath / (k + ".bin"))
     print("exporting state_dict", k, end="\r")
 print("\nexporting other stuff...")
 
