@@ -2,3 +2,5 @@ maple-diffusion/bins/*.txt
 maple-diffusion/bins/*.bin
 xcuserdata/
 .DS_Store
+# dreambooth ckpts don't have alphas
+!maple-diffusion/bins/alphas_cumprod.bin
