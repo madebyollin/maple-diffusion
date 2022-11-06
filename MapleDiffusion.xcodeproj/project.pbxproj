@@ -7,23 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		97B171AF28F23B7700B97242 /* maple_diffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B171AE28F23B7700B97242 /* maple_diffusionApp.swift */; };
+		97B171AF28F23B7700B97242 /* MapleDiffusionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B171AE28F23B7700B97242 /* MapleDiffusionApp.swift */; };
 		97B171B128F23B7700B97242 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B171B028F23B7700B97242 /* ContentView.swift */; };
 		97B171B328F23B7800B97242 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97B171B228F23B7800B97242 /* Assets.xcassets */; };
 		97B171B728F23B7800B97242 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97B171B628F23B7800B97242 /* Preview Assets.xcassets */; };
 		97B171BE28F23BBC00B97242 /* MapleDiffusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B171BD28F23BBC00B97242 /* MapleDiffusion.swift */; };
 		97B171C028F23C7D00B97242 /* bins in Resources */ = {isa = PBXBuildFile; fileRef = 97B171BF28F23C7D00B97242 /* bins */; };
+		A8454AA6291365F5005CD5A3 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8454AA5291365F4005CD5A3 /* PreferencesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		97B171AB28F23B7700B97242 /* maple-diffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "maple-diffusion.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		97B171AE28F23B7700B97242 /* maple_diffusionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = maple_diffusionApp.swift; sourceTree = "<group>"; };
+		97B171AB28F23B7700B97242 /* MapleDiffusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapleDiffusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		97B171AE28F23B7700B97242 /* MapleDiffusionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapleDiffusionApp.swift; sourceTree = "<group>"; };
 		97B171B028F23B7700B97242 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		97B171B228F23B7800B97242 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97B171B428F23B7800B97242 /* maple_diffusion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = maple_diffusion.entitlements; sourceTree = "<group>"; };
 		97B171B628F23B7800B97242 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		97B171BD28F23BBC00B97242 /* MapleDiffusion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapleDiffusion.swift; sourceTree = "<group>"; };
 		97B171BF28F23C7D00B97242 /* bins */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bins; sourceTree = "<group>"; };
+		A8454AA5291365F4005CD5A3 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,7 +50,7 @@
 		97B171AC28F23B7700B97242 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				97B171AB28F23B7700B97242 /* maple-diffusion.app */,
+				97B171AB28F23B7700B97242 /* MapleDiffusion.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -56,9 +58,10 @@
 		97B171AD28F23B7700B97242 /* maple-diffusion */ = {
 			isa = PBXGroup;
 			children = (
-				97B171AE28F23B7700B97242 /* maple_diffusionApp.swift */,
+				97B171AE28F23B7700B97242 /* MapleDiffusionApp.swift */,
 				97B171B028F23B7700B97242 /* ContentView.swift */,
 				97B171BD28F23BBC00B97242 /* MapleDiffusion.swift */,
+				A8454AA5291365F4005CD5A3 /* PreferencesView.swift */,
 				97B171BF28F23C7D00B97242 /* bins */,
 				97B171B228F23B7800B97242 /* Assets.xcassets */,
 				97B171B428F23B7800B97242 /* maple_diffusion.entitlements */,
@@ -78,9 +81,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		97B171AA28F23B7700B97242 /* maple-diffusion */ = {
+		97B171AA28F23B7700B97242 /* MapleDiffusion */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 97B171BA28F23B7800B97242 /* Build configuration list for PBXNativeTarget "maple-diffusion" */;
+			buildConfigurationList = 97B171BA28F23B7800B97242 /* Build configuration list for PBXNativeTarget "MapleDiffusion" */;
 			buildPhases = (
 				97B171A728F23B7700B97242 /* Sources */,
 				97B171A828F23B7700B97242 /* Frameworks */,
@@ -90,9 +93,9 @@
 			);
 			dependencies = (
 			);
-			name = "maple-diffusion";
+			name = MapleDiffusion;
 			productName = "maple-diffusion";
-			productReference = 97B171AB28F23B7700B97242 /* maple-diffusion.app */;
+			productReference = 97B171AB28F23B7700B97242 /* MapleDiffusion.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -110,7 +113,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 97B171A628F23B7700B97242 /* Build configuration list for PBXProject "maple-diffusion" */;
+			buildConfigurationList = 97B171A628F23B7700B97242 /* Build configuration list for PBXProject "MapleDiffusion" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -123,7 +126,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				97B171AA28F23B7700B97242 /* maple-diffusion */,
+				97B171AA28F23B7700B97242 /* MapleDiffusion */,
 			);
 		};
 /* End PBXProject section */
@@ -147,8 +150,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				97B171B128F23B7700B97242 /* ContentView.swift in Sources */,
+				A8454AA6291365F5005CD5A3 /* PreferencesView.swift in Sources */,
 				97B171BE28F23BBC00B97242 /* MapleDiffusion.swift in Sources */,
-				97B171AF28F23B7700B97242 /* maple_diffusionApp.swift in Sources */,
+				97B171AF28F23B7700B97242 /* MapleDiffusionApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,6 +209,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -257,6 +263,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -274,10 +282,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"maple-diffusion/Preview Content\"";
-				DEVELOPMENT_TEAM = MGZW3M7DL4;
+				DEVELOPMENT_TEAM = 927QBR5K88;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Maple Diffusion";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Give us permission to save this photo";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -288,12 +297,12 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.madebyollin.maple-diffusion";
+				PRODUCT_BUNDLE_IDENTIFIER = Lilliana.MapleDiffusion;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -313,10 +322,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"maple-diffusion/Preview Content\"";
-				DEVELOPMENT_TEAM = MGZW3M7DL4;
+				DEVELOPMENT_TEAM = 927QBR5K88;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Maple Diffusion";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Give us permission to save this photo";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -327,12 +337,12 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.madebyollin.maple-diffusion";
+				PRODUCT_BUNDLE_IDENTIFIER = Lilliana.MapleDiffusion;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -345,7 +355,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		97B171A628F23B7700B97242 /* Build configuration list for PBXProject "maple-diffusion" */ = {
+		97B171A628F23B7700B97242 /* Build configuration list for PBXProject "MapleDiffusion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				97B171B828F23B7800B97242 /* Debug */,
@@ -354,7 +364,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		97B171BA28F23B7800B97242 /* Build configuration list for PBXNativeTarget "maple-diffusion" */ = {
+		97B171BA28F23B7800B97242 /* Build configuration list for PBXNativeTarget "MapleDiffusion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				97B171BB28F23B7800B97242 /* Debug */,
