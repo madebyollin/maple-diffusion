@@ -12,17 +12,18 @@ On macOS, Maple Diffusion uses slightly more memory (~6GB), to reach <1s / step.
 
 ![](screenshot.jpg)
 
-# Projects using Maple Diffusion
+# Related Projects
 
 * https://github.com/mortenjust/maple-diffusion/ is a fork with several improvements
+* Draw Things ([announcement](https://liuliu.me/eyes/stretch-iphone-to-its-limit-a-2gib-model-that-can-draw-everything-in-your-pocket/), [App Store link](https://apps.apple.com/us/app/draw-things-ai-generation/id6444050820)) is a full iPhone app for Stable Diffusion (using a similar MPSGraph-based approach)
 
 # Device Requirements
 
 Maple Diffusion should run on any Apple Silicon Mac (M1, M2, etc.). Intel Macs should also work now thanks to [this PR](https://github.com/madebyollin/maple-diffusion/pull/14#issuecomment-1282166802).
 
-Maple Diffusion should run on any iOS device with [sufficient RAM](https://blakespot.com/ios_device_specifications_grid.html) (≥6144MB RAM definitely works; 4096MB *might* but I wouldn't bet on it; anything lower than that won't work). That means recent iPads should work out of the box, and recent iPhones should work if you can get the `Increase Memory Limit` capability working (to unlock 4GB of RAM). Unfortunately, iPhone 14 variants seemingly do not honor the increased memory limit, so they won't work yet.
+Maple Diffusion should run on any iOS device with [sufficient RAM](https://blakespot.com/ios_device_specifications_grid.html) (≥6144MB RAM definitely works; 4096MB [doesn't](https://github.com/madebyollin/maple-diffusion/issues/25)). That means recent iPads should work out of the box, and recent iPhones should work if you can get the `Increase Memory Limit` capability working (to unlock 4GB of app-usable RAM). iPhone 14 variants reportedly didn't work until [iOS 16.1 stable](https://github.com/madebyollin/maple-diffusion/issues/5#issuecomment-1304410263).
 
-Maple Diffusion currently expects **Xcode 14** and **iOS 16**; other versions may require changing build settings or just not work. iOS 16.1 (beta) is reportedly broken and always generating a gray image.
+Maple Diffusion currently expects **Xcode 14** and **iOS 16**; other versions may require changing build settings or just not work. iOS 16.1 (beta) was reportedly [broken](https://github.com/madebyollin/maple-diffusion/issues/8) and always generating a gray image, but I think that's fixed
 
 # Usage
 
