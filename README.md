@@ -14,8 +14,9 @@ On macOS, Maple Diffusion uses slightly more memory (~6GB), to reach <1s / step.
 
 # Related Projects
 
-* https://github.com/mortenjust/maple-diffusion/ is a fork with several improvements
-* Draw Things ([announcement](https://liuliu.me/eyes/stretch-iphone-to-its-limit-a-2gib-model-that-can-draw-everything-in-your-pocket/), [App Store link](https://apps.apple.com/us/app/draw-things-ai-generation/id6444050820)) is a full iPhone app for Stable Diffusion (using a similar MPSGraph-based approach)
+* **Native Diffusion** ([repo](https://github.com/mortenjust/native-diffusion/)) is a Swift Package-ified version of this codebase with several improvements (including image-to-image)
+* **Waifu Art AI** ([announcement](https://twitter.com/dgspitzer/status/1596652212964712449), [App Store link](https://apps.apple.com/us/app/waifu-art-ai-local-generator/id6444585505)) is an iOS / macOS app for (anime-style) Stable Diffusion based on this codebase
+* **Draw Things** ([announcement](https://liuliu.me/eyes/stretch-iphone-to-its-limit-a-2gib-model-that-can-draw-everything-in-your-pocket/), [App Store link](https://apps.apple.com/us/app/draw-things-ai-generation/id6444050820)) is an iOS app for Stable Diffusion (using an independent codebase with similar MPSGraph-based approach)
 
 # Device Requirements
 
