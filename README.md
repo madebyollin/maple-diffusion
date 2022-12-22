@@ -14,6 +14,7 @@ On macOS, Maple Diffusion uses slightly more memory (~6GB), to reach <1s / step.
 
 # Related Projects
 
+* **Core ML Stable Diffusion** ([repo](https://github.com/apple/ml-stable-diffusion)) is Apple's recommended way of running Stable Diffusion in Swift, using CoreML instead of MPSGraph. CoreML was originally much slower than MPSGraph ([I tried it back in August](https://gist.github.com/madebyollin/86b9596ffa4ab0fa7674a16ca2aeab3d)), but Apple has improved CoreML performance a lot on recent macOS / iOS versions.
 * **Native Diffusion** ([repo](https://github.com/mortenjust/native-diffusion/)) is a Swift Package-ified version of this codebase with several improvements (including image-to-image)
 * **Waifu Art AI** ([announcement](https://twitter.com/dgspitzer/status/1596652212964712449), [App Store link](https://apps.apple.com/us/app/waifu-art-ai-local-generator/id6444585505)) is an iOS / macOS app for (anime-style) Stable Diffusion based on this codebase
 * **Draw Things** ([announcement](https://liuliu.me/eyes/stretch-iphone-to-its-limit-a-2gib-model-that-can-draw-everything-in-your-pocket/), [App Store link](https://apps.apple.com/us/app/draw-things-ai-generation/id6444050820)) is an iOS app for Stable Diffusion (using an independent codebase with similar MPSGraph-based approach)
@@ -30,7 +31,7 @@ Maple Diffusion currently expects **Xcode 14** and **iOS 16**; other versions ma
 
 To build and run Maple Diffusion:
 
-1. Download a Stable Diffusion PyTorch model checkpoint ([`sd-v1-4.ckpt`](https://huggingface.co/CompVis/stable-diffusion-v1-4), or some derivation thereof)
+1. Download a Stable Diffusion PyTorch model checkpoint ([`sd-v1-4.ckpt`](https://huggingface.co/CompVis/stable-diffusion-v-1-4-original), or some derivation thereof)
 
 2. Download this repo
 
